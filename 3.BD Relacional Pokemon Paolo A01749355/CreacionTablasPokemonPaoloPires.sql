@@ -1,0 +1,106 @@
+#Paolo Pires A01749355
+CREATE SCHEMA JuegoPokemon;    
+USE JuegoPokemon; 
+
+CREATE TABLE Jugador (
+  ID_Jugador INT NOT NULL AUTO_INCREMENT,
+  Nombre_de_usuario VARCHAR(50) NOT NULL,
+  Email VARCHAR(50) NOT NULL,
+  Fecha_union DATE NOT NULL,
+  Partidas_ganadas INT,
+  Partidas_perdidas INT,
+  PRIMARY KEY (ID_Jugador) 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE Baraja (
+  ID_Baraja INT NOT NULL  AUTO_INCREMENT,
+  ID_Jugador INT NOT NULL,
+  Fecha_Creacion DATETIME NOT NULL,
+  Tamano INT NOT NULL,
+  PRIMARY KEY (ID_Baraja),
+  CONSTRAINT FK_Jugador_Baraja FOREIGN KEY (ID_Jugador) REFERENCES Jugador (ID_Jugador) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
+
+CREATE TABLE Moneda (
+  ID_Moneda INT NOT NULL AUTO_INCREMENT,
+  Resultado VARCHAR(10) NOT NULL,
+  PRIMARY KEY (ID_Moneda)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
+
+
+CREATE TABLE Partida (
+  ID_Partida INT NOT NULL AUTO_INCREMENT,
+  ID_Moneda INT NOT NULL,
+  Fecha DATE NOT NULL,
+  ID_Ganador INT NOT NULL,
+  PRIMARY KEY (ID_Partida),
+  CONSTRAINT FK_Partida_Moneda FOREIGN KEY (ID_Moneda) REFERENCES Moneda (ID_Moneda) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT FK_Partida_Ganador FOREIGN KEY (ID_Ganador) REFERENCES Jugador (ID_Jugador) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
+
+CREATE TABLE Turno (
+  ID_Turno INT NOT NULL AUTO_INCREMENT,
+  ID_Partida INT NOT NULL,
+  ID_Jugador INT NOT NULL,
+  Estado BOOLEAN NOT NULL,
+  Dano_Dado INT NOT NULL,
+  Dano_Recibido INT NOT NULL,
+  Duracion INT NOT NULL,
+  Cartas_Jugadas INT NOT NULL,
+  PRIMARY KEY (ID_Turno),
+  CONSTRAINT FK_Partida_Turno FOREIGN KEY (ID_Partida) REFERENCES Partida (ID_Partida) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT FK_Jugador_Turno FOREIGN KEY (ID_Jugador) REFERENCES Jugador (ID_Jugador) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
+
+CREATE TABLE Carta_Pokemon (
+  ID_Carta_Pokemon INT NOT NULL,
+  Nombre VARCHAR(50),
+  Fase_Evolucion VARCHAR(50),
+  Tipo VARCHAR(50),
+  PS VARCHAR(50),
+  Ataque VARCHAR(50),
+  Dano INT,
+  PRIMARY KEY (ID_Carta_Pokemon)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
+
+CREATE TABLE Carta_Energia (
+  ID_Carta_Energia INT NOT NULL,
+  Nombre VARCHAR(50),
+  Tipo VARCHAR(50),
+  PRIMARY KEY (ID_Carta_Energia)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
+
+CREATE TABLE Carta_Entrenador (
+  ID_Carta_Entrenador INT NOT NULL,
+  Nombre VARCHAR(50),
+  Tipo VARCHAR(50),
+  PRIMARY KEY (ID_Carta_Entrenador)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
+
+CREATE TABLE Relacion_CartaPokemon_Baraja (
+  ID_Relacion INT NOT NULL AUTO_INCREMENT,
+  ID_Baraja INT NOT NULL,
+  ID_Carta_Pokemon INT NOT NULL,
+  PRIMARY KEY (ID_Relacion),
+  CONSTRAINT FK_Baraja_CartaPokemon FOREIGN KEY (ID_Baraja) REFERENCES Baraja (ID_Baraja) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT FK_CartaPokemon_Baraja FOREIGN KEY (ID_Carta_Pokemon) REFERENCES Carta_Pokemon (ID_Carta_Pokemon) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE Relacion_CartaEnergia_Baraja (
+  ID_Relacion INT NOT NULL AUTO_INCREMENT,
+  ID_Baraja INT NOT NULL,
+  ID_Carta_Energia INT NOT NULL,
+  PRIMARY KEY (ID_Relacion),
+  CONSTRAINT FK_Baraja_CartaEnergia FOREIGN KEY (ID_Baraja) REFERENCES Baraja (ID_Baraja) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT FK_CartaEnergia_Baraja FOREIGN KEY (ID_Carta_Energia) REFERENCES Carta_Energia (ID_Carta_Energia) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE Relacion_CartaEntrenador_Baraja (
+  ID_Relacion INT NOT NULL AUTO_INCREMENT,
+  ID_Baraja INT NOT NULL,
+  ID_Carta_Entrenador INT NOT NULL,
+  PRIMARY KEY (ID_Relacion),
+  CONSTRAINT FK_Baraja_CartaEntrenador FOREIGN KEY (ID_Baraja) REFERENCES Baraja (ID_Baraja) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT FK_CartaEntrenador_Baraja FOREIGN KEY (ID_Carta_Entrenador) REFERENCES Carta_Entrenador (ID_Carta_Entrenador) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
